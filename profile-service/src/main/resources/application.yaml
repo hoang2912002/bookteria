@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: profile
+  servlet:
+    context-path: /profile
+server:
+  port: 8081
