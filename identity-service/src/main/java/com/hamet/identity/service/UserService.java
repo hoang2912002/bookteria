@@ -16,12 +16,16 @@ import com.hamet.identity.entity.Role;
 import com.hamet.identity.entity.User;
 import com.hamet.identity.exception.AppException;
 import com.hamet.identity.exception.ErrorCode;
+import com.hamet.identity.mapper.ProfileMapper;
 import com.hamet.identity.mapper.UserMapper;
 import com.hamet.identity.repository.RoleRepository;
 import com.hamet.identity.repository.UserRepository;
+import com.hamet.identity.repository.httpClient.ProfileClient;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
+import lombok.var;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +38,8 @@ public class UserService {
     RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    ProfileClient profileClient;
+    ProfileMapper profileMapper;
 
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
@@ -45,8 +51,13 @@ public class UserService {
         roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
 
         user.setRoles(roles);
+        user = userRepository.save(user);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        var profileRequest = profileMapper.toProfileCreateRequest(request); // var = tự suy luận DataType
+        profileRequest.setUserId(user.getId());
+        val profileResponse = profileClient.createProfile(profileRequest); // var + final
+
+        return userMapper.toUserResponse(user);
     }
 
     public UserResponse getMyInfo() {
