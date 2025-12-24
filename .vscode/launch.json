@@ -6,6 +6,12 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ApiGatewayApplication",
+            "request": "launch",
+            "mainClass": "com.hamet.api_gateway.ApiGatewayApplication"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
@@ -24,13 +30,20 @@
         },
         {
             "type": "java",
+            "name": "ApiGateWayApplication",
+            "request": "launch",
+            "mainClass": "com.hamet.api-gateway.ApiGateWayApplication"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-ProfileApplication<profile>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "mainClass": "com.hamet.profile.ProfileApplication",
             "projectName": "profile",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8440 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=profile"
         },
         {
             "type": "java",
@@ -39,6 +52,16 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.hamet.identity.IdentityApplication",
             "projectName": "identity",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ApiGatewayApplication<api-gateway>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.hamet.api_gateway.ApiGatewayApplication",
+            "projectName": "api-gateway",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }

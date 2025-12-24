@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hamet.identity.constant.PredefinedRole;
 import com.hamet.identity.dto.request.UserCreationRequest;
@@ -25,7 +26,6 @@ import com.hamet.identity.repository.httpClient.ProfileClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import lombok.var;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,6 +41,7 @@ public class UserService {
     ProfileClient profileClient;
     ProfileMapper profileMapper;
 
+    @Transactional(rollbackFor = Exception.class)
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
 

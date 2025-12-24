@@ -10,6 +10,6 @@ import com.hamet.identity.dto.response.UserProfileResponse;
 
 @FeignClient(name = "profile-service", url = "${app.service.profile-service}")
 public interface ProfileClient {
-    @PostMapping(value = "/user-profile", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/internal/user-profile", produces = MediaType.APPLICATION_JSON_VALUE)
     UserProfileResponse createProfile(@RequestBody ProfileCreateRequest createRequest);
 }
