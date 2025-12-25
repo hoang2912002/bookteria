@@ -1,8 +1,11 @@
 package com.hamet.profile.service;
 
+import java.util.List;
+
 import org.apache.catalina.User;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hamet.profile.dto.request.ProfileCreationRequest;
 import com.hamet.profile.dto.response.UserProfileResponse;
@@ -41,6 +44,16 @@ public class UserProfileService {
             return userProfileMapper.toUserProfileResponse(userProfile);    
         } catch (Exception e) {
             log.error("Error fetching user profile: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public List<UserProfileResponse> getAllProfiles(){
+        try {
+            return userProfileRepository.findAll().stream().map(userProfileMapper::toUserProfileResponse).toList();
+        } catch (Exception e) {
+            log.error("Error fetching all user profiles: {}", e.getMessage());
             throw e;
         }
     }

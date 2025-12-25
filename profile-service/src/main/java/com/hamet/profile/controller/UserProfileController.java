@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("user-profile")
+@RequestMapping("users")
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class UserProfileController {
     
@@ -28,6 +31,11 @@ public class UserProfileController {
     @GetMapping("/{id}")
     UserProfileResponse getProfile(@PathVariable("id") String id) {
         return userProfileService.getProfileById(id);
+    }
+    
+    @GetMapping("")
+    List<UserProfileResponse> getAllProfilesResponse() {
+        return userProfileService.getAllProfiles();
     }
     
 }

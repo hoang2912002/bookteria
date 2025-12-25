@@ -16,7 +16,7 @@ import lombok.experimental.FieldDefaults;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("internal/user-profile")
+@RequestMapping("internal/users")
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class InternalUserProfileController {
     UserProfileService userProfileService;
