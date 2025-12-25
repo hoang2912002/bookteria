@@ -4,10 +4,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -24,6 +27,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -36,6 +40,17 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     IdentityService identityService;
     ObjectMapper objectMapper;
 
+    // List endpoint no check authorization
+    @NonFinal
+    private String[] publicEndpoint = {
+        "/identity/auth/.*",
+        "/identity/users/registration"
+    };
+
+    @NonFinal
+    @Value("${app.api-prefix}")
+    private String apiPrefix;
+
     @Override
     public int getOrder() {
         return -1;
@@ -44,6 +59,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         log.info("--- Enter AuthenticationFilter ---");
+
+        // If public endpoint next chain
+        if(isPublicEndpoint(exchange.getRequest()))
+            return chain.filter(exchange);
+        
+
         // Get token
         List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
         if(CollectionUtils.isEmpty(authHeader)){
@@ -66,6 +87,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             }
         );
        
+    }
+
+    private boolean isPublicEndpoint(ServerHttpRequest request){
+        return Arrays.stream(publicEndpoint).anyMatch(s -> request.getURI().getPath().matches(apiPrefix + s));
     }
 
     private Mono<Void> unAuthenticated(ServerHttpResponse response){
