@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_ENDPOINTS = {
-        
+        "/internal/users"
     };
 
     private final CustomJwtDecoder customJwtDecoder;
