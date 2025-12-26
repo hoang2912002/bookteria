@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .container { font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; }
+        .header { color: #2c3e50; font-size: 24px; font-weight: bold; }
+        .button { 
+            background-color: #3498db; color: white; padding: 10px 20px; 
+            text-decoration: none; border-radius: 5px; display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Xin chào, <span th:text="${name}">User</span>!</div>
+        <p>Cảm ơn bạn đã tham gia cùng <strong>Bookteria</strong>.</p>
+        <p>Mã xác thực của bạn là: <span style="font-size: 20px; color: red;" th:text="${otp}">000000</span></p>
+        <p>Vui lòng nhấn vào nút bên dưới để hoàn tất:</p>
+        <a th:href="${link}" class="button">Xác thực ngay</a>
+        <br><br>
+        <p>Trân trọng,<br>Đội ngũ Hamet</p>
+    </div>
+</body>
+</html>
