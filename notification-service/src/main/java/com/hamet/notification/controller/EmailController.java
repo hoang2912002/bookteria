@@ -7,6 +7,7 @@ import com.hamet.notification.service.EmailService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("send-mail")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class EmailController {
     EmailService emailService;
     
@@ -32,5 +34,4 @@ public class EmailController {
         emailData.put("link", "http://192.168.1.16:3000");
         return emailService.sendVisualEmail("hoang2912002@gmail.com","Test send mail",emailData);
     }
-    
 }

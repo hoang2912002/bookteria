@@ -3,6 +3,7 @@ package com.hamet.identity.service;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,6 +41,7 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     ProfileClient profileClient;
     ProfileMapper profileMapper;
+    KafkaTemplate<String, String> kafkaTemplate;
 
     @Transactional(rollbackFor = Exception.class)
     public UserResponse createUser(UserCreationRequest request) {
@@ -58,6 +60,12 @@ public class UserService {
         profileRequest.setUserId(user.getId());
         val profileResponse = profileClient.createProfile(profileRequest); // var + final
 
+        // Publish message to kafka đăng ký user gửi mail
+        kafkaTemplate.send("onboard-successful", "Welcome our new member " + user.getUsername())
+            .whenComplete((result, ex) -> {
+                if (ex == null) log.info("Sent message thành công: {}", result.getRecordMetadata().offset());
+                else log.error("Gửi lỗi: {}", ex.getMessage());
+            });;
         return userMapper.toUserResponse(user);
     }
 
