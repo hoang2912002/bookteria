@@ -14,7 +14,9 @@ spring:
       group-id: notification-group
       auto-offset-reset: earliest # Thứ tự cũ đến mới
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer #key
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer #value
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer #value
+      properties:
+        spring.json.trusted.packages: "*"
 # logging:
 #   level:
 #     org.springframework.kafka: DEBUG

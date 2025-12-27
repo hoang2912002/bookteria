@@ -15,8 +15,11 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class UserProfileResponse {
     String id;
+    String userId;
+    String username;
+    String email;
     String firstName;
     String lastName;
-    String city;
     LocalDate dob;
+    String city;
 }

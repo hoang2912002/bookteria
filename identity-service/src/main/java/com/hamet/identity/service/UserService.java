@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hamet.eventDto.NotificationEvent;
 import com.hamet.identity.constant.PredefinedRole;
 import com.hamet.identity.dto.request.UserCreationRequest;
 import com.hamet.identity.dto.request.UserUpdateRequest;
@@ -41,7 +42,7 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     ProfileClient profileClient;
     ProfileMapper profileMapper;
-    KafkaTemplate<String, String> kafkaTemplate;
+    KafkaTemplate<String, Object> kafkaTemplate;
 
     @Transactional(rollbackFor = Exception.class)
     public UserResponse createUser(UserCreationRequest request) {
@@ -60,8 +61,15 @@ public class UserService {
         profileRequest.setUserId(user.getId());
         val profileResponse = profileClient.createProfile(profileRequest); // var + final
 
+        NotificationEvent notificationEvent = NotificationEvent.builder()
+            .channel("EMAIL")
+            .recipient(request.getFirstName() + request.getLastName())
+            .subject("Welcome to bookteria")
+            .body("Hello")
+            .build();
+
         // Publish message to kafka đăng ký user gửi mail
-        kafkaTemplate.send("onboard-successful", "Welcome our new member " + user.getUsername())
+        kafkaTemplate.send("notification-delivery", notificationEvent)
             .whenComplete((result, ex) -> {
                 if (ex == null) log.info("Sent message thành công: {}", result.getRecordMetadata().offset());
                 else log.error("Gửi lỗi: {}", ex.getMessage());
