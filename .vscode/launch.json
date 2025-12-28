@@ -75,6 +75,17 @@
             "mainClass": "com.hamet.notification.NotificationApplication",
             "projectName": "notification",
             "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=10034 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=notification"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-PostApplication<post>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.hamet.post.PostApplication",
+            "projectName": "post",
+            "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
     ]

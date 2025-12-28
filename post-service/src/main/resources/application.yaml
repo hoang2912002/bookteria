@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: post
+  mongodb:
+    uri: mongodb://root:root@localhost:27017/post-service?authSource=admin
+server:
+  port: 8083
+  servlet:
+    context-path: /post
+jwt:
+  signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
