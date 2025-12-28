@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hamet.post.dto.request.PostRequest;
 import com.hamet.post.dto.response.ApiResponse;
+import com.hamet.post.dto.response.PageResponse;
 import com.hamet.post.dto.response.PostResponse;
 import com.hamet.post.service.PostService;
 
@@ -38,9 +39,12 @@ public class PostController {
     }
     
     @GetMapping("")
-    public ApiResponse<List<PostResponse>> getAllPost() {
-        return ApiResponse.<List<PostResponse>>builder()
-            .result(postService.getAllPost())
+    public ApiResponse<PageResponse<PostResponse>> getAllPost(
+        @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+        @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ) {
+        return ApiResponse.<PageResponse<PostResponse>>builder()
+            .result(postService.getAllPost(page,size))
             .build();
     }
     
