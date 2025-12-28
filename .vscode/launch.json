@@ -87,6 +87,16 @@
             "projectName": "post",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-FileApplication<file>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.hamet.file.FileApplication",
+            "projectName": "file",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
