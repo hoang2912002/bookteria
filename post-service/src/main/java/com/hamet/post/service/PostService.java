@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PostService {
     PostRepository postRepository;
     PostMapper postMapper;
+    DateTimeFormatter dateTimeFormatter;
 
     public PostResponse createPost(PostRequest request){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -50,8 +51,17 @@ public class PostService {
         Sort sort = Sort.by("createdDate").descending();
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-        Page pageData = postRepository.findAllByUserId(authentication.getName(), pageable);
-        List<PostResponse> postResponse = pageData.getContent().stream().map(post -> postMapper.toPostResponse((Post) post)).toList();
+        Page<Post> pageData = postRepository.findAllByUserId(authentication.getName(), pageable);
+        List<PostResponse> postResponse = 
+            pageData.getContent().stream()
+            .map(
+                post -> {
+                    PostResponse postRes = postMapper.toPostResponse(post);
+                    postRes.setCreated(dateTimeFormatter.format(post.getCreatedDate()));
+                    return postRes;
+                } 
+            ).toList();
+
         return PageResponse.<PostResponse>builder()
             .totalPages(pageData.getTotalPages())
             .pageSize(pageData.getSize())
