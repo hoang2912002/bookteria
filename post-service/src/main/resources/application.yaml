@@ -9,3 +9,7 @@ server:
     context-path: /post
 jwt:
   signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
+
+app:
+  service:
+    profile-service: "http://localhost:8081/profile"

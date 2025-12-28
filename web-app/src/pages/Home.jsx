@@ -31,9 +31,19 @@ export default function Home() {
     setLoading(true);
     getMyPosts(page)
       .then((response) => {
-        console.log(1)
         setTotalPages(response.data.result.totalPages);
-        setPosts((prevPosts) => [...prevPosts, ...response.data.result.data]);
+        setPosts((prevPosts) => {
+          const newPosts = response.data.result.data;
+          // Gộp mảng cũ và mới lại
+          const combinedPosts = [...prevPosts, ...newPosts];
+
+          // Lọc trùng dựa trên id
+          const uniquePosts = Array.from(
+            new Map(combinedPosts.map((post) => [post.id, post])).values()
+          );
+
+          return uniquePosts;
+        });
         setHasMore(response.data.result.data.length > 0);
         console.log("loaded posts:", response.data.result);
       })

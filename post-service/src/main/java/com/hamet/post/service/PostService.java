@@ -14,9 +14,11 @@ import org.springframework.stereotype.Service;
 import com.hamet.post.dto.request.PostRequest;
 import com.hamet.post.dto.response.PageResponse;
 import com.hamet.post.dto.response.PostResponse;
+import com.hamet.post.dto.response.UserProfileResponse;
 import com.hamet.post.entity.Post;
 import com.hamet.post.mapper.PostMapper;
 import com.hamet.post.repository.PostRepository;
+import com.hamet.post.repository.httpClient.ProfileClient;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class PostService {
     PostRepository postRepository;
     PostMapper postMapper;
     DateTimeFormatter dateTimeFormatter;
+    ProfileClient profileClient;
 
     public PostResponse createPost(PostRequest request){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -47,17 +50,25 @@ public class PostService {
 
     public PageResponse<PostResponse> getAllPost(int page, int size){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+        UserProfileResponse userProfile = null;
+        try {
+            userProfile = profileClient.getProfileByUserId(authentication.getName()).getResult();
+            
+        } catch (Exception e) {
+            log.error("Error get profile by user id", e);
+        }
         Sort sort = Sort.by("createdDate").descending();
         Pageable pageable = PageRequest.of(page - 1, size, sort);
 
         Page<Post> pageData = postRepository.findAllByUserId(authentication.getName(), pageable);
+        String username = userProfile != null ? userProfile.getFirstName() + userProfile.getLastName() : null;
         List<PostResponse> postResponse = 
             pageData.getContent().stream()
             .map(
                 post -> {
                     PostResponse postRes = postMapper.toPostResponse(post);
                     postRes.setCreated(dateTimeFormatter.format(post.getCreatedDate()));
+                    postRes.setUserName(username);
                     return postRes;
                 } 
             ).toList();

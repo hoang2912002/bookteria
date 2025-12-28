@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hamet.profile.dto.request.ProfileCreationRequest;
 import com.hamet.profile.dto.response.UserProfileResponse;
 import com.hamet.profile.entity.UserProfile;
+import com.hamet.profile.exception.AppException;
+import com.hamet.profile.exception.ErrorCode;
 import com.hamet.profile.mapper.UserProfileMapper;
 import com.hamet.profile.repository.UserProfileRepository;
 
@@ -40,7 +42,17 @@ public class UserProfileService {
 
     public UserProfileResponse getProfileById(String id) {
         try {
-            UserProfile userProfile = userProfileRepository.findById(id).orElseThrow(() -> new RuntimeException("User profile not found"));
+            UserProfile userProfile = userProfileRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_EXISTED));
+            return userProfileMapper.toUserProfileResponse(userProfile);    
+        } catch (Exception e) {
+            log.error("Error fetching user profile: {}", e.getMessage());
+            throw e;
+        }
+    }
+    
+    public UserProfileResponse getProfileByUserId(String id) {
+        try {
+            UserProfile userProfile = userProfileRepository.findByUserId(id).orElseThrow(() -> new AppException(ErrorCode.USER_EXISTED));
             return userProfileMapper.toUserProfileResponse(userProfile);    
         } catch (Exception e) {
             log.error("Error fetching user profile: {}", e.getMessage());

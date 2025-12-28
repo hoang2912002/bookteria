@@ -1,4 +1,4 @@
-package com.hamet.profile.dto.response;
+package com.hamet.post.dto.response;
 
 import java.time.LocalDate;
 
