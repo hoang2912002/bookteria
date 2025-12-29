@@ -1,0 +1,22 @@
+package com.hamet.file.dto.response;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class FileInfoResponse {
+    String name;
+    String contentType;
+    Long size;
+    String md5Checksum;
+    String path;
+    String url;
+}

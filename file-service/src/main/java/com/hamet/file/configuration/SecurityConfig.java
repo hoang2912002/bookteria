@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_ENDPOINTS = {
-        "/media/upload"
+        // "/media/upload"
     };
 
     private final CustomJwtDecoder customJwtDecoder;
