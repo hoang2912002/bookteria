@@ -2,6 +2,8 @@ package com.hamet.identity.service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,8 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hamet.eventDto.NotificationEvent;
 import com.hamet.identity.constant.PredefinedRole;
+import com.hamet.identity.dto.request.ApiResponse;
 import com.hamet.identity.dto.request.UserCreationRequest;
 import com.hamet.identity.dto.request.UserUpdateRequest;
+import com.hamet.identity.dto.response.RoleResponse;
+import com.hamet.identity.dto.response.UserProfileResponse;
 import com.hamet.identity.dto.response.UserResponse;
 import com.hamet.identity.entity.Role;
 import com.hamet.identity.entity.User;
@@ -28,6 +33,7 @@ import com.hamet.identity.repository.httpClient.ProfileClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import lombok.var;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,13 +83,26 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    public UserResponse getMyInfo() {
+    public UserProfileResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
 
         User user = userRepository.findById(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        UserProfileResponse profile = profileClient.getProfile(user.getId()).getResult();
+        profile.setEmail(user.getEmail());
+        profile.setEmailVerified(user.isEmailVerified());
+        profile.setUserId(user.getId());
 
-        return userMapper.toUserResponse(user);
+        // Mapping từ Set<Role> sang Set<RoleResponse>
+        Set<RoleResponse> roleResponses = user.getRoles().stream()
+        .map(role -> RoleResponse.builder()
+            .name(role.getName())
+            .description(role.getDescription())
+            // map các trường khác nếu có
+            .build())
+        .collect(Collectors.toSet());
+        profile.setRoles(roleResponses);
+        return profile;
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.http.HttpHeaders;
 
 import org.springframework.core.io.Resource;
@@ -39,7 +39,7 @@ public class FileController {
 
     @PostMapping("/media/upload")
     public ApiResponse<FileResponse> uploadMedia(
-        @RequestParam("file") MultipartFile file
+        @RequestPart("file") MultipartFile file
     ) {
         return ApiResponse.<FileResponse>builder()
         .result(fileService.uploadFile(file))

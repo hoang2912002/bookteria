@@ -46,4 +46,10 @@ public class UserProfile {
 
     @Property("city")
     String city;
+
+    String avatar;
+
+    // @Property("user_name")
+    // String userName;
+    String email;
 }

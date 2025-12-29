@@ -1,7 +1,5 @@
-package com.hamet.identity.service;
+package com.hamet.profile.configuration;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 

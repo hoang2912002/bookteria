@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.hamet.identity.dto.request.ApiResponse;
 import com.hamet.identity.dto.request.UserCreationRequest;
 import com.hamet.identity.dto.request.UserUpdateRequest;
+import com.hamet.identity.dto.response.UserProfileResponse;
 import com.hamet.identity.dto.response.UserResponse;
 import com.hamet.identity.service.UserService;
 
@@ -47,8 +48,8 @@ public class UserController {
     }
 
     @GetMapping("/my-info")
-    ApiResponse<UserResponse> getMyInfo() {
-        return ApiResponse.<UserResponse>builder()
+    ApiResponse<UserProfileResponse> getMyInfo() {
+        return ApiResponse.<UserProfileResponse>builder()
                 .result(userService.getMyInfo())
                 .build();
     }

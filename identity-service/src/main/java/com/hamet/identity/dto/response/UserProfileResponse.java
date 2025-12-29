@@ -1,6 +1,7 @@
 package com.hamet.identity.dto.response;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +23,7 @@ public class UserProfileResponse {
     String lastName;
     LocalDate dob;
     String city;
+    boolean emailVerified;
+    Set<RoleResponse> roles;
+    String avatar;
 }

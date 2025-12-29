@@ -2,14 +2,18 @@ package com.hamet.profile.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hamet.profile.dto.request.ProfileCreationRequest;
+import com.hamet.profile.dto.request.UpdateProfileRequest;
+import com.hamet.profile.dto.response.ApiResponse;
 import com.hamet.profile.dto.response.UserProfileResponse;
 import com.hamet.profile.service.UserProfileService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -40,4 +44,17 @@ public class UserProfileController {
         return userProfileService.getAllProfiles();
     }
     
+    @PutMapping("/my-profile")
+    ApiResponse<UserProfileResponse> updateMyProfile(@RequestBody UpdateProfileRequest request) {
+        return ApiResponse.<UserProfileResponse>builder()
+                .result(userProfileService.updateMyProfile(request))
+                .build();
+    }
+    
+    @PutMapping("/avatar")
+    ApiResponse<UserProfileResponse> updateAvatar(@RequestParam("file") MultipartFile file) {
+        return ApiResponse.<UserProfileResponse>builder()
+                .result(userProfileService.updateAvatar(file))
+                .build();
+    }
 }

@@ -17,4 +17,4 @@ jwt:
 app:
   file:
     storage-dir: D:/java-string-boot/bookteria-file
-    download-prefix: http://localhost:8888/api/v1/file/media/download
+    download-prefix: http://localhost:8888/api/v1/file/media/download/

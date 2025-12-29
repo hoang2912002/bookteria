@@ -33,7 +33,6 @@ export default function Login() {
   };
 
   useEffect(() => {
-    console.log(1)
     if (isAuthenticated()) {
       navigate("/");
     }
