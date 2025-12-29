@@ -14,8 +14,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hamet.file.dto.response.FileInfoResponse;
+import com.hamet.file.entity.FileManagement;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 
 @Repository
 public class FileRepository {
@@ -48,6 +51,19 @@ public class FileRepository {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e){
+            throw e;
+        }
+        return null;
+    }
+
+    public Resource read(FileManagement fileManagement){
+        try {
+            var data = Files.readAllBytes(Path.of(fileManagement.getPath()));
+            return new ByteArrayResource(data);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             throw e;
         }
         return null;

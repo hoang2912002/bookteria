@@ -45,6 +45,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     private String[] publicEndpoint = {
         "/identity/auth/.*",
         "/identity/users/registration",
+        "/file/media/download/.*"
         // "/file/.*"
     };
 

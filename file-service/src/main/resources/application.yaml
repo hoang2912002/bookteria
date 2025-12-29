@@ -7,10 +7,14 @@ spring:
     name: file
   mongodb:
     uri: mongodb://root:root@localhost:27017/file-service?authSource=admin
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 jwt:
   signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
 
 app:
   file:
     storage-dir: D:/java-string-boot/bookteria-file
-    download-prefix: http://localhost:8888/api/v1/file/media
+    download-prefix: http://localhost:8888/api/v1/file/media/download
