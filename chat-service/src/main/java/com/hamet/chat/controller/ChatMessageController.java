@@ -25,7 +25,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ChatMessageController {
     ChatMessageService chatMessageService;
-    
     @PostMapping("/create")
     ApiResponse<ChatMessageResponse> create(
             @RequestBody @Valid ChatMessageRequest request) {

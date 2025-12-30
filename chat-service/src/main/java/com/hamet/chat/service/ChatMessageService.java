@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.corundumstudio.socketio.SocketIOServer;
 import com.hamet.chat.dto.request.ChatMessageRequest;
 import com.hamet.chat.dto.response.ChatMessageResponse;
 import com.hamet.chat.dto.response.UserProfileResponse;
@@ -34,6 +35,7 @@ public class ChatMessageService {
     ChatMessageRepository chatMessageRepository;
     ConversationRepository conversationRepository;
     ProfileClient profileClient;
+    SocketIOServer socketIOServer;
 
     ChatMessageMapper chatMessageMapper;
     public List<ChatMessageResponse> getMessages(String conversationId) {
@@ -80,6 +82,12 @@ public class ChatMessageService {
             .build()
         );
         chatMessage.setCreatedDate(Instant.now());
+
+        String message = chatMessage.getMessage();
+
+        socketIOServer.getAllClients().forEach(c -> {
+            c.sendEvent("message", message);
+        });
 
         return toChatMessageResponse(chatMessageRepository.save(chatMessage));
     }
