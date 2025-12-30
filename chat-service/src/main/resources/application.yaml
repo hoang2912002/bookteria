@@ -16,3 +16,4 @@ jwt:
 app:
   service:
     profile-service: "http://localhost:8081/profile"
+    identity-service: "http://localhost:8080/identity"
