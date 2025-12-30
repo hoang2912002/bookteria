@@ -59,31 +59,35 @@ public class ConversationService {
         
         String userIdHash = generateParticipantHash(sorted);
 
-        List<ParticipantInfo>participantInfos = List.of(
-            ParticipantInfo.builder()
-                .userId(userInfo.getUserId())
-                .username(userInfo.getUsername())
-                .firstName(userInfo.getFirstName())
-                .lastName(userInfo.getLastName())
-                .avatar(userInfo.getAvatar())
-                .build(),
-            ParticipantInfo.builder()
-                .userId(participantInfo.getUserId())
-                .username(participantInfo.getUsername())
-                .firstName(participantInfo.getFirstName())
-                .lastName(participantInfo.getLastName())
-                .avatar(participantInfo.getAvatar())
-                .build()
-        );
+        Conversation conversation = conversationRepository.findByParticipantsHash(userIdHash).orElseGet(
+            () -> {
+                    List<ParticipantInfo>participantInfos = List.of(
+                        ParticipantInfo.builder()
+                            .userId(userInfo.getUserId())
+                            .username(userInfo.getUsername())
+                            .firstName(userInfo.getFirstName())
+                            .lastName(userInfo.getLastName())
+                            .avatar(userInfo.getAvatar())
+                            .build(),
+                        ParticipantInfo.builder()
+                            .userId(participantInfo.getUserId())
+                            .username(participantInfo.getUsername())
+                            .firstName(participantInfo.getFirstName())
+                            .lastName(participantInfo.getLastName())
+                            .avatar(participantInfo.getAvatar())
+                            .build()
+                    );
 
-        Conversation conversation = Conversation.builder()
-            .type(request.getType())
-            .participantsHash(userIdHash)
-            .createdDate(Instant.now())
-            .modifiedDate(Instant.now())
-            .participants(participantInfos)
-            .build();
-        
+                    Conversation newConversation = Conversation.builder()
+                        .type(request.getType())
+                        .participantsHash(userIdHash)
+                        .createdDate(Instant.now())
+                        .modifiedDate(Instant.now())
+                        .participants(participantInfos)
+                        .build();
+                    return conversationRepository.save(newConversation);
+                }
+            );
         return toConversationResponse(conversationRepository.save(conversation));
     }
 

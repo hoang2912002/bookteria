@@ -5,6 +5,9 @@ server:
 spring:
   application:
     name: chat
+  data:
+    mongodb:
+      auto-index-creation: true
   mongodb:
     uri: mongodb://root:root@localhost:27017/chat-service?authSource=admin
 jwt:
