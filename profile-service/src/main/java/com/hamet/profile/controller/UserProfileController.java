@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hamet.profile.dto.request.ProfileCreationRequest;
+import com.hamet.profile.dto.request.SearchUserRequest;
 import com.hamet.profile.dto.request.UpdateProfileRequest;
 import com.hamet.profile.dto.response.ApiResponse;
 import com.hamet.profile.dto.response.UserProfileResponse;
@@ -55,6 +56,13 @@ public class UserProfileController {
     ApiResponse<UserProfileResponse> updateAvatar(@RequestParam("file") MultipartFile file) {
         return ApiResponse.<UserProfileResponse>builder()
                 .result(userProfileService.updateAvatar(file))
+                .build();
+    }
+
+    @PostMapping("/search")
+    ApiResponse<List<UserProfileResponse>> search(@RequestBody SearchUserRequest request) {
+        return ApiResponse.<List<UserProfileResponse>>builder()
+                .result(userProfileService.search(request))
                 .build();
     }
 }

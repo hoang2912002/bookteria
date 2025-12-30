@@ -86,7 +86,8 @@
             "mainClass": "com.hamet.post.PostApplication",
             "projectName": "post",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1138 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=post"
         },
         {
             "type": "java",
@@ -95,6 +96,17 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.hamet.file.FileApplication",
             "projectName": "file",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=2644 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=file"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ChatApplication<chat>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.hamet.chat.ChatApplication",
+            "projectName": "chat",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }

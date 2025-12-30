@@ -1,0 +1,15 @@
+server:
+  port: 8085
+  servlet:
+    context-path: /chat
+spring:
+  application:
+    name: chat
+  mongodb:
+    uri: mongodb://root:root@localhost:27017/chat-service?authSource=admin
+jwt:
+  signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
+
+app:
+  service:
+    profile-service: "http://localhost:8081/profile"

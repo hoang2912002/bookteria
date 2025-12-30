@@ -38,14 +38,25 @@ public class PostService {
 
     public PostResponse createPost(PostRequest request){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+        UserProfileResponse userProfile = null;
+        try {
+            userProfile = profileClient.getProfileByUserId(authentication.getName()).getResult();
+            
+        } catch (Exception e) {
+            log.error("Error get profile by user id", e);
+        }
         Post post = Post.builder()
             .content(request.getContent())
             .createdDate(Instant.now())
             .modifiedDate(Instant.now())
             .userId(authentication.getName())
             .build();
-        return postMapper.toPostResponse(postRepository.save(post));
+
+        String username = userProfile != null ? userProfile.getFirstName() + userProfile.getLastName() : null;
+        PostResponse postResponse = postMapper.toPostResponse(postRepository.save(post));
+        postResponse.setCreated(dateTimeFormatter.format(post.getCreatedDate()));
+        postResponse.setUsername(username);
+        return postResponse;
     }
 
     public PageResponse<PostResponse> getAllPost(int page, int size){
@@ -68,7 +79,7 @@ public class PostService {
                 post -> {
                     PostResponse postRes = postMapper.toPostResponse(post);
                     postRes.setCreated(dateTimeFormatter.format(post.getCreatedDate()));
-                    postRes.setUserName(username);
+                    postRes.setUsername(username);
                     return postRes;
                 } 
             ).toList();

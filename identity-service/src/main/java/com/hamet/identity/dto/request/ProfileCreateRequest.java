@@ -20,6 +20,7 @@ public class ProfileCreateRequest {
     String userId;
     String firstName;
     String lastName;
+    String username;
     LocalDate dob;
     String city;
 }

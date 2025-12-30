@@ -1,5 +1,6 @@
 package com.hamet.profile.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.neo4j.repository.Neo4jRepository;
@@ -10,4 +11,5 @@ import com.hamet.profile.entity.UserProfile;
 @Repository
 public interface UserProfileRepository extends Neo4jRepository<UserProfile,String> {
     Optional<UserProfile> findByUserId(String userId);
+    List<UserProfile> findAllByUsernameLike(String username);
 }

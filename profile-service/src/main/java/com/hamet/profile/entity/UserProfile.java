@@ -49,7 +49,8 @@ public class UserProfile {
 
     String avatar;
 
-    // @Property("user_name")
-    // String userName;
+    @Property("user_name")
+    String username;
+    
     String email;
 }
