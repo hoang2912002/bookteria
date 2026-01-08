@@ -3,22 +3,29 @@ package com.hamet.chat.service;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.corundumstudio.socketio.SocketIOServer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hamet.chat.dto.request.ChatMessageRequest;
 import com.hamet.chat.dto.response.ChatMessageResponse;
 import com.hamet.chat.dto.response.UserProfileResponse;
 import com.hamet.chat.entity.ChatMessage;
 import com.hamet.chat.entity.Conversation;
 import com.hamet.chat.entity.ParticipantInfo;
+import com.hamet.chat.entity.WebSocketSession;
 import com.hamet.chat.exception.AppException;
 import com.hamet.chat.exception.ErrorCode;
 import com.hamet.chat.mapper.ChatMessageMapper;
 import com.hamet.chat.repository.ChatMessageRepository;
 import com.hamet.chat.repository.ConversationRepository;
+import com.hamet.chat.repository.WebSocketSessionRepository;
 import com.hamet.chat.repository.httpClient.ProfileClient;
 
 import ch.qos.logback.core.joran.action.AppenderAction;
@@ -26,6 +33,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Service
@@ -36,6 +44,8 @@ public class ChatMessageService {
     ConversationRepository conversationRepository;
     ProfileClient profileClient;
     SocketIOServer socketIOServer;
+    WebSocketSessionRepository webSocketSessionRepository;
+    ObjectMapper objectMapper;
 
     ChatMessageMapper chatMessageMapper;
     public List<ChatMessageResponse> getMessages(String conversationId) {
@@ -49,17 +59,15 @@ public class ChatMessageService {
         );
 
         List<ChatMessage> chatMessages = chatMessageRepository.findAllByConversationIdOrderByCreatedDateDesc(conversationId);
-
         return chatMessages.stream().map(this::toChatMessageResponse).toList();
     }
 
-    public ChatMessageResponse create(ChatMessageRequest request) {
+    public ChatMessageResponse create(ChatMessageRequest request) throws JsonProcessingException {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-
+        
         Conversation conversation = conversationRepository.findById(request.getConversationId()).orElseThrow(
             () -> new AppException(ErrorCode.CONVERSATION_NOT_FOUND)
         );
-
         conversation.getParticipants().stream().filter(p -> userId.equals(p.getUserId())).findAny().orElseThrow(
             () -> new AppException(ErrorCode.CONVERSATION_NOT_FOUND)
         );
@@ -67,7 +75,6 @@ public class ChatMessageService {
         UserProfileResponse userInfo = profileClient.getProfile(
             userId
         ).getResult();
-
         if(userInfo == null){
             throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
@@ -83,10 +90,23 @@ public class ChatMessageService {
         );
         chatMessage.setCreatedDate(Instant.now());
 
-        String message = chatMessage.getMessage();
+        List<String> userIds = conversation.getParticipants().stream().map(
+            ParticipantInfo::getUserId
+        ).toList();
+        Map<String, WebSocketSession> webSocketSessions = 
+            webSocketSessionRepository.findAllByUserIdIn(userIds)
+            .stream().collect(Collectors.toMap(WebSocketSession::getSocketSessionId, Function.identity()));
 
+        ChatMessageResponse chatMessageResponse = chatMessageMapper.toChatMessageResponse(chatMessage);
         socketIOServer.getAllClients().forEach(c -> {
-            c.sendEvent("message", message);
+            WebSocketSession w = webSocketSessions.getOrDefault(c.getSessionId().toString(),null);
+            if(w != null){
+                chatMessageResponse.setMe(
+                    w.getUserId().equals(userId)
+                );
+                String message = objectMapper.writeValueAsString(chatMessageResponse);
+                c.sendEvent("message", message);
+            }
         });
 
         return toChatMessageResponse(chatMessageRepository.save(chatMessage));

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hamet.chat.dto.request.ChatMessageRequest;
 import com.hamet.chat.dto.response.ApiResponse;
 import com.hamet.chat.dto.response.ChatMessageResponse;
@@ -27,7 +28,7 @@ public class ChatMessageController {
     ChatMessageService chatMessageService;
     @PostMapping("/create")
     ApiResponse<ChatMessageResponse> create(
-            @RequestBody @Valid ChatMessageRequest request) {
+            @RequestBody @Valid ChatMessageRequest request) throws JsonProcessingException {
         return ApiResponse.<ChatMessageResponse>builder()
                 .result(chatMessageService.create(request))
                 .build();
